@@ -61,7 +61,7 @@ function CartItemComponent({ item, onQuantityChange, onRemove }: CartItemProps) 
 
   return (
     <div className="flex items-center gap-4 p-4 bg-black rounded-lg border border-dark-500">
-      <div className="w-16 h-16 bg-dark-500 rounded-lg flex-shrink-0">
+      <div className="w-16 md:w-32 h-16 md:h-32 bg-dark-500 rounded-lg flex-shrink-0">
         <Image
           src={item.image}
           alt={item.name}
@@ -98,14 +98,14 @@ function CartItemComponent({ item, onQuantityChange, onRemove }: CartItemProps) 
           <div className="flex items-center gap-2">
             <button
               onClick={() => onQuantityChange(item.id, Math.max(1, item.quantity - 1))}
-              className="w-6 h-6 rounded-full border !border-white !bg-transparent flex items-center justify-center hover:!bg-gray-900 active:!bg-gray-800 focus:!bg-gray-900 transition-colors"
+              className="w-6 h-6 rounded-full border !border-gray-500 !bg-transparent flex items-center justify-center hover:!bg-gray-900 active:!bg-gray-800 focus:!bg-gray-900 transition-colors"
             >
               <Minus className="w-3 h-3 !text-white" />
             </button>
             <span className="text-body text-light-100 min-w-[2rem] text-center">{item.quantity}</span>
             <button
               onClick={() => onQuantityChange(item.id, item.quantity + 1)}
-              className="w-6 h-6 rounded-full border !border-white !bg-transparent flex items-center justify-center hover:!bg-gray-900 active:!bg-gray-800 focus:!bg-gray-900 transition-colors"
+              className="w-6 h-6 rounded-full border !border-gray-500 !bg-transparent flex items-center justify-center hover:!bg-gray-900 active:!bg-gray-800 focus:!bg-gray-900 transition-colors"
             >
               <Plus className="w-3 h-3 !text-white" />
             </button>
@@ -119,7 +119,7 @@ function CartItemComponent({ item, onQuantityChange, onRemove }: CartItemProps) 
         </span>
         <button
           onClick={() => onRemove(item.id)}
-          className="w-8 h-8 !bg-transparent border-2 !border-white rounded flex items-center justify-center hover:!bg-gray-900 active:!bg-gray-800 focus:!bg-gray-900 transition-colors"
+          className="w-8 h-8 !bg-transparent border-2 !border-black rounded flex items-center justify-center hover:!bg-gray-900 active:!bg-gray-800 focus:!bg-gray-900 transition-colors"
           title="Remove item"
         >
           <Trash className="w-4 h-4 !text-white" />

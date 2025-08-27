@@ -99,7 +99,7 @@ input[type="email"]:focus, input[type="text"]:focus, input[type="password"]:focu
 input[type="number"]:focus, input[type="tel"]:focus, textarea:focus, select:focus {
   background-color: #000000 !important;
   color: #ffffff !important;
-  border-color: #bbbbbb !important;
+  border-color: #ffffff !important;
   outline: none !important;
   box-shadow: 0 0 0 2px rgba(187, 187, 187, 0.2) !important;
 }

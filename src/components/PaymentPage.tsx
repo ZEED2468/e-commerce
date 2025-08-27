@@ -189,10 +189,10 @@ export default function PaymentPage() {
                     value={formData.email}
                     onChange={handleInputChange}
                     placeholder="Email Address"
-                    className="w-full px-4 py-3 rounded-lg text-body placeholder-gray-400 focus:outline-none"
+                    className="w-full px-4 py-3 rounded-lg text-body bg-black placeholder-gray-400 focus:outline-none"
                     style={{
                       backgroundColor: '#000000',
-                      color: '#ffffff',
+                      color: '#000000',
                       borderColor: '#999999',
                       borderWidth: '1px',
                       borderStyle: 'solid'
