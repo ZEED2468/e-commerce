@@ -52,7 +52,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
   
   // Get the main product image from images array
   const primaryImage = images.find((img) => img.isPrimary) || images[0];
-  const mainImage = primaryImage?.url || "/shoes/shoe-1.jpg"; // fallback image
+  const mainImage = primaryImage?.url || "/books/books-1.jpg"; // fallback image
 
   const displayPrice = defaultVariant?.price ? Number(defaultVariant.price) : null;
   const salePrice = defaultVariant?.salePrice ? Number(defaultVariant.salePrice) : null;
@@ -64,7 +64,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
       : null;
 
   const subtitle =
-    product.gender?.label ? `${product.gender.label} Shoes` : undefined;
+    product.gender?.label ? `${product.gender.label} books` : undefined;
 
   return (
 <main className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20 lg:px-8 lg:pb-24 bg-black">
