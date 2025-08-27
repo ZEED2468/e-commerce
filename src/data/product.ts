@@ -1,0 +1,73 @@
+export const products = [
+      {
+    id: 1,
+    title: "Atlas Cloud Sync",
+    subtitle: "ACS-3.2.5-SaaS-MultiNode",
+    price: 149.99,
+    imageSrc: "/shoes/shoe-1.jpg",
+
+  },
+  {
+    id: 2,
+    title: "AQuantum Flux Engine",
+    subtitle: "QFE-0.12.4-PreRel-QbitSim",
+    price: 129.99,
+    imageSrc: "/shoes/shoe-2.webp",
+  },
+  {
+    id: 3,
+    title: "Cryptex Vault Suite",
+    subtitle: "CVS-1.9.3-LTS-EncRSA4096",
+    price: 159.99,
+    imageSrc: "/shoes/shoe-3.webp",
+  },
+    {
+    id: 4,
+    title: "Zenith Compiler Pack ZX-14",
+    subtitle: "ZCP-ZX14-4.8.7-Stable-ARM64",
+    price: 139.99,
+    imageSrc: "/shoes/shoe-4.webp",
+  },
+    {
+    id: 5,
+    title: "HardW Encryptor Pack GJ2",
+    subtitle: "HW-Enc-GJ2-5.9.1-Prot-XAES256",
+    price: 139.99,
+    imageSrc: "/shoes/shoe-4.webp",
+  },
+       {
+    id: 6,
+    title: "AAI Script Pack 1",
+    subtitle: "Build-AAI-1.0.0-Release-STM32X",
+    price: 139.99,
+    imageSrc: "/shoes/shoe-4.webp",
+  },
+    {
+    id: 7,
+    title: "HardW Encryptor Pack N",
+    subtitle: "HW-Enc-N-3.5.2-SecureCore-SHA512",
+    price: 139.99,
+    imageSrc: "/shoes/shoe-4.webp",
+  },
+    {
+    id: 8,
+    title: "AAI Script Pack 992",
+    subtitle: "Build-AAI-992.7.3-LTS-X64",
+    price: 139.99,
+    imageSrc: "/shoes/shoe-4.webp",
+  },
+    {
+    id: 9,
+    title: "AAI Script Pack 2",
+    subtitle: "Build-AAI-2.1.4-Alpha-RC9",
+    price: 139.99,
+    imageSrc: "/shoes/shoe-4.webp",
+  },
+    {
+    id: 10,
+    title: "NeuroGrid AI Module",
+    subtitle: "NG-AIMod-2.6.1-Beta-TensorX",
+    price: 139.99,
+    imageSrc: "/shoes/shoe-4.webp",
+  },
+]
