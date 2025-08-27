@@ -43,7 +43,19 @@ interface SelectedProduct {
   imageSrc: string;
 }
 
+// Helper function for responsive text truncation
+const getResponsiveText = (text: string, mobileLength = 10, tabletLength = 25, desktopLength = 35) => {
+  return {
+    mobile: text.length > mobileLength ? text.substring(0, mobileLength) + '...' : text,
+    tablet: text.length > tabletLength ? text.substring(0, tabletLength) + '...' : text,
+    desktop: text.length > desktopLength ? text.substring(0, desktopLength) + '...' : text,
+    full: text
+  };
+};
+
 function CartItemComponent({ item, onQuantityChange, onRemove }: CartItemProps) {
+  const responsiveTitle = getResponsiveText(item.name);
+
   return (
     <div className="flex items-center gap-4 p-4 bg-white rounded-lg border border-light-300">
       <div className="w-16 h-16 bg-light-200 rounded-lg flex-shrink-0">
@@ -57,8 +69,24 @@ function CartItemComponent({ item, onQuantityChange, onRemove }: CartItemProps) 
       </div>
       
       <div className="flex-1 min-w-0">
-        <h3 className="text-body-medium text-dark-900 font-medium">{item.name}</h3>
-        <p className="text-caption text-dark-500 mt-1">{item.sku}</p>
+        {/* Responsive title - different lengths for different screen sizes */}
+        <h3 className="text-body-medium text-dark-900 font-medium">
+          <span className="block sm:hidden" title={item.name}>
+            {responsiveTitle.mobile}
+          </span>
+          <span className="hidden sm:block md:hidden" title={item.name}>
+            {responsiveTitle.tablet}
+          </span>
+          <span className="hidden md:block lg:hidden" title={item.name}>
+            {responsiveTitle.desktop}
+          </span>
+          <span className="hidden lg:block" title={item.name}>
+            {responsiveTitle.full}
+          </span>
+        </h3>
+        
+        {/* SKU - responsive visibility */}
+        <p className="hidden md:block text-caption text-dark-500 mt-1">{item.sku}</p> 
         
         <div className="flex items-center gap-3 mt-2">
           <span className="text-caption text-dark-700">Quantity</span>
@@ -80,7 +108,7 @@ function CartItemComponent({ item, onQuantityChange, onRemove }: CartItemProps) 
         </div>
       </div>
       
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 mb-[2rem] md:mb-0">
         <span className="text-body-medium text-dark-900 font-medium">
           {formatPrice(item.price * item.quantity)}
         </span>
