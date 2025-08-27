@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 
 function formatPrice(price: number | null | undefined) {
   if (price === null || price === undefined) return undefined;
-  return `${price.toFixed(2)}`;
+  return `$${price.toFixed(2)}`;
 }
 
 interface CartItem {
@@ -15,6 +15,16 @@ interface CartItem {
   price: number;
   quantity: number;
   image: string;
+}
+
+// Define the expected structure for cart data from cookies
+interface CartCookieItem {
+  variantId?: string;
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+  image?: string;
 }
 
 export default function PaymentPage() {
@@ -38,8 +48,8 @@ export default function PaymentPage() {
       
       if (cartCookie) {
         try {
-          const cartData = JSON.parse(decodeURIComponent(cartCookie.split('=')[1]));
-          return cartData.map((item: any) => ({
+          const cartData: CartCookieItem[] = JSON.parse(decodeURIComponent(cartCookie.split('=')[1]));
+          return cartData.map((item: CartCookieItem) => ({
             id: item.variantId || item.id,
             name: item.name,
             sku: `SKU-${item.variantId || item.id}`,

@@ -3,9 +3,13 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 
+// Define the expected structure for cart data from cookies
+interface CartCookieItem {
+  quantity: number;
+}
+
 export default function PaymentProcessing() {
   const [showSuccess, setShowSuccess] = useState(false);
-  const [initialCartCount, setInitialCartCount] = useState(0);
 
   // Function to get cart count from cookies
   const getCartCount = () => {
@@ -16,8 +20,8 @@ export default function PaymentProcessing() {
       
       if (cart) {
         try {
-          const cartData = JSON.parse(decodeURIComponent(cart.split('=')[1]));
-          return cartData.reduce((total: number, item: any) => total + item.quantity, 0);
+          const cartData: CartCookieItem[] = JSON.parse(decodeURIComponent(cart.split('=')[1]));
+          return cartData.reduce((total: number, item: CartCookieItem) => total + item.quantity, 0);
         } catch {
           return 0;
         }
@@ -39,7 +43,7 @@ export default function PaymentProcessing() {
 
   useEffect(() => {
     // Store initial cart count when component mounts
-    setInitialCartCount(getCartCount());
+    getCartCount();
 
     // Show success message and clear cart after 10 seconds
     const timer = setTimeout(() => {

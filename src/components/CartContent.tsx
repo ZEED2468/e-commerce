@@ -25,6 +25,24 @@ interface CartItemProps {
   onRemove: (id: string) => void;
 }
 
+// Define the expected structure for cart data from cookies
+interface CartCookieItem {
+  variantId?: string;
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+  image?: string;
+}
+
+// Define the selected product structure
+interface SelectedProduct {
+  id: number | string;
+  title: string;
+  price: number;
+  imageSrc: string;
+}
+
 function CartItemComponent({ item, onQuantityChange, onRemove }: CartItemProps) {
   return (
     <div className="flex items-center gap-4 p-4 bg-white rounded-lg border border-light-300">
@@ -77,7 +95,7 @@ function CartItemComponent({ item, onQuantityChange, onRemove }: CartItemProps) 
   );
 }
 
-export default function CartContent({ selectedProduct }: { selectedProduct?: any }) {
+export default function CartContent({ selectedProduct }: { selectedProduct?: SelectedProduct }) {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const processedProductRef = useRef<string | null>(null);
@@ -91,8 +109,8 @@ export default function CartContent({ selectedProduct }: { selectedProduct?: any
       
       if (cartCookie) {
         try {
-          const cartData = JSON.parse(decodeURIComponent(cartCookie.split('=')[1]));
-          return cartData.map((item: any) => ({
+          const cartData: CartCookieItem[] = JSON.parse(decodeURIComponent(cartCookie.split('=')[1]));
+          return cartData.map((item: CartCookieItem) => ({
             id: item.variantId || item.id,
             name: item.name,
             sku: `SKU-${item.variantId || item.id}`,
