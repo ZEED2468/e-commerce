@@ -111,7 +111,7 @@ export default function PaymentPage() {
         <Link href="/" className="hover:underline">
           Home
         </Link>{" "}
-        / <span className="text-dark-900">Payment</span>
+        / <span className="text-white">Payment</span>
       </nav>
 
       <div className="min-h-screen">
@@ -189,7 +189,14 @@ export default function PaymentPage() {
                     value={formData.email}
                     onChange={handleInputChange}
                     placeholder="Email Address"
-                    className="w-full px-4 py-3 border border-light-300 rounded-lg text-body text-dark-900 placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white"
+                    className="w-full px-4 py-3 rounded-lg text-body placeholder-gray-400 focus:outline-none"
+                    style={{
+                      backgroundColor: '#000000',
+                      color: '#ffffff',
+                      borderColor: '#999999',
+                      borderWidth: '1px',
+                      borderStyle: 'solid'
+                    }}
                     required
                   />
                 </div>
@@ -209,7 +216,14 @@ export default function PaymentPage() {
                     value={formData.cardName}
                     onChange={handleInputChange}
                     placeholder="John Doe"
-                    className="w-full px-4 py-3 border border-light-300 rounded-lg text-body text-dark-900 placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white"
+                    className="w-full px-4 py-3 rounded-lg text-body placeholder-gray-400 focus:outline-none"
+                    style={{
+                      backgroundColor: '#000000',
+                      color: '#ffffff',
+                      borderColor: '#999999',
+                      borderWidth: '1px',
+                      borderStyle: 'solid'
+                    }}
                     required
                   />
                 </div>
@@ -229,7 +243,14 @@ export default function PaymentPage() {
                     value={formData.cardNumber}
                     onChange={handleInputChange}
                     placeholder="1234 - 1234 - 1234 - 1234"
-                    className="w-full px-4 py-3 border border-light-300 rounded-lg text-body text-dark-900 placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white"
+                    className="w-full px-4 py-3 rounded-lg text-body placeholder-gray-400 focus:outline-none"
+                    style={{
+                      backgroundColor: '#000000',
+                      color: '#ffffff',
+                      borderColor: '#999999',
+                      borderWidth: '1px',
+                      borderStyle: 'solid'
+                    }}
                     required
                   />
                 </div>
@@ -250,7 +271,14 @@ export default function PaymentPage() {
                       value={formData.expiryDate}
                       onChange={handleInputChange}
                       placeholder="MM/YY"
-                      className="w-full px-4 py-3 border border-light-300 rounded-lg text-body text-dark-900 placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white"
+                      className="w-full px-4 py-3 rounded-lg text-body placeholder-gray-400 focus:outline-none"
+                      style={{
+                        backgroundColor: '#000000',
+                        color: '#ffffff',
+                        borderColor: '#999999',
+                        borderWidth: '1px',
+                        borderStyle: 'solid'
+                      }}
                       required
                     />
                   </div>
@@ -268,7 +296,14 @@ export default function PaymentPage() {
                       value={formData.cvv}
                       onChange={handleInputChange}
                       placeholder="CVV"
-                      className="w-full px-4 py-3 border border-light-300 rounded-lg text-body text-dark-900 placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white"
+                      className="w-full px-4 py-3 rounded-lg text-body placeholder-gray-400 focus:outline-none"
+                      style={{
+                        backgroundColor: '#000000',
+                        color: '#ffffff',
+                        borderColor: '#999999',
+                        borderWidth: '1px',
+                        borderStyle: 'solid'
+                      }}
                       required
                     />
                   </div>
@@ -289,7 +324,14 @@ export default function PaymentPage() {
                     value={formData.billingAddress}
                     onChange={handleInputChange}
                     placeholder="12 SW Longer Str madeylia"
-                    className="w-full px-4 py-3 border border-light-300 rounded-lg text-body text-dark-900 placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white"
+                    className="w-full px-4 py-3 rounded-lg text-body placeholder-gray-400 focus:outline-none"
+                    style={{
+                      backgroundColor: '#000000',
+                      color: '#ffffff',
+                      borderColor: '#999999',
+                      borderWidth: '1px',
+                      borderStyle: 'solid'
+                    }}
                     required
                   />
                 </div>
@@ -308,8 +350,8 @@ export default function PaymentPage() {
 
                 {/* Pay Button */}
                 <button
-                  type="submit"
-                  className="w-full !bg-black !text-white !border-white py-4 px-6 rounded-lg text-body-medium font-medium hover:!bg-white hover:!text-black focus:!bg-white focus:!text-black transition-colors"
+                  type="submit" 
+                  className="w-full !bg-black !text-white !border-gray-300 py-4 px-6 rounded-lg text-body-medium font-medium hover:!bg-white hover:!text-blackfocus:!bg-white focus:!text-black transition-colors border"
                 >
                   Pay
                 </button>
