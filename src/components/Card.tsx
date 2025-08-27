@@ -28,7 +28,7 @@ export default function Card({
     price === undefined ? undefined : typeof price === "number" ? `$${price.toFixed(2)}` : price;
   const content = (
       <article
-      className={`group rounded-xl bg-black ring-2 ring-gray-800 transition-colors hover:ring-white ${className}`}
+      className={`group rounded-xl bg-black ring-2 ring-gray-500 transition-colors hover:ring-white ${className}`}
     >
       <div className="relative aspect-square overflow-hidden rounded-t-xl bg-dark-500">
         <Image
@@ -46,7 +46,6 @@ export default function Card({
         </div>
         {description && <p className="text-body text-white">{description}</p>}
         {subtitle && <p className="text-body text-white">{subtitle}</p>}
-        <p className="text-body text-white">Available Product</p>
       </div>
     </article>
   );

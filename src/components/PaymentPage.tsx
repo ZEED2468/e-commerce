@@ -111,7 +111,7 @@ export default function PaymentPage() {
         <Link href="/" className="hover:underline">
           Home
         </Link>{" "}
-        / <span className="text-white">Payment</span>
+        / <span className="text-white">Checkout</span>
       </nav>
 
       <div className="min-h-screen">
@@ -339,10 +339,10 @@ export default function PaymentPage() {
                 {/* Total Amount before Pay button */}
                 <div className="bg-light-50 p-4 rounded-lg">
                   <div className="flex justify-between items-center">
-                    <span className="text-body-large text-dark-900 font-semibold">
+                    <span className="text-body-large text-white font-semibold">
                       Total Amount
                     </span>
-                    <span className="text-body-large text-dark-900 font-bold">
+                    <span className="text-body-large text-white font-bold">
                       {formatPrice(total)}
                     </span>
                   </div>
@@ -351,7 +351,7 @@ export default function PaymentPage() {
                 {/* Pay Button */}
                 <button
                   type="submit" 
-                  className="w-full !bg-black !text-white !border-gray-300 py-4 px-6 rounded-lg text-body-medium font-medium hover:!bg-white hover:!text-blackfocus:!bg-white focus:!text-black transition-colors border"
+                  className="w-full !bg-black !text-white !border-gray-300 py-4 px-6 rounded-lg text-body-medium font-medium hover:!bg-white hover:!text-black focus:!text-black transition-colors border"
                 >
                   Pay
                 </button>

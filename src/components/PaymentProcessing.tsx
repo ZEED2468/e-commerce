@@ -62,7 +62,7 @@ export default function PaymentProcessing() {
     <main className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20 lg:px-8 lg:pb-24">
 <nav className="py-4 text-caption text-white">
         <Link href="/" className="hover:underline">Home</Link> /{" "}
-        <span className="text-white">Payment Processing</span>
+        <span className="text-white">Payment</span>
       </nav>
 
 <div className="flex items-center justify-center pt-20 pb-32 bg-black">
@@ -109,7 +109,7 @@ export default function PaymentProcessing() {
               </p>
               <Link
                 href="/"
-                className="inline-block bg-black !text-white border !border-gray-300 px-6 py-3 rounded-lg text-body-medium font-medium hover:!bg-white hover:text-black transition"
+                className="inline-block bg-black !text-white !border-gray-300 px-6 py-3 rounded-lg text-body-medium font-medium hover:!bg-white hover:!text-black focus:!text-black transition-colors border"
               >
                 Continue Shopping
               </Link>

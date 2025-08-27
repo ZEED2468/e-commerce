@@ -9,9 +9,9 @@ function formatPrice(price: number | null | undefined) {
 
 function NotFoundBlock() {
   return (
-    <section className="mx-auto max-w-3xl rounded-xl border border-light-300 bg-light-100 p-8 text-center">
-      <h1 className="text-heading-3 text-dark-900">Product not found</h1>
-      <p className="mt-2 text-body text-dark-700">The product you&apos;re looking for doesn&apos;t exist or may have been removed.</p>
+    <section className="mx-auto max-w-3xl rounded-xl border border-gray-300 bg-black p-8 text-center">
+      <h1 className="text-heading-3 text-white">Product not found</h1>
+      <p className="mt-2 text-body text-white">The product you&apos;re looking for doesn&apos;t exist or may have been removed.</p>
       <div className="mt-6">
         <Link
           href="/products"
