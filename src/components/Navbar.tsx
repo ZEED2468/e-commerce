@@ -4,6 +4,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 
+// Define proper types for cart items
+interface CartItem {
+  quantity: number;
+  [key: string]: unknown;
+}
+
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
@@ -18,7 +24,8 @@ export default function Navbar() {
       if (cart) {
         try {
           const cartData = JSON.parse(decodeURIComponent(cart.split('=')[1]));
-          return cartData.reduce((total: number, item: any) => total + item.quantity, 0);
+          // Line 21 fix: Replace 'any' with proper CartItem type
+          return cartData.reduce((total: number, item: CartItem) => total + item.quantity, 0);
         } catch {
           return 0;
         }
