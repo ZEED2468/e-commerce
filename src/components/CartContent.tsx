@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Minus, Plus, X, ArrowLeft } from "lucide-react";
+import { Minus, Plus, ArrowLeft, Trash } from "lucide-react";
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 
@@ -17,6 +17,7 @@ interface CartItem {
   price: number;
   quantity: number;
   image: string;
+  description?: string;
 }
 
 interface CartItemProps {
@@ -33,12 +34,14 @@ interface CartCookieItem {
   price: number;
   quantity: number;
   image?: string;
+  description?: string;
 }
 
 // Define the selected product structure
 interface SelectedProduct {
   id: number | string;
   title: string;
+  subtitle?: string;
   price: number;
   imageSrc: string;
 }
@@ -57,8 +60,8 @@ function CartItemComponent({ item, onQuantityChange, onRemove }: CartItemProps) 
   const responsiveTitle = getResponsiveText(item.name);
 
   return (
-    <div className="flex items-center gap-4 p-4 bg-white rounded-lg border border-light-300">
-      <div className="w-16 h-16 bg-light-200 rounded-lg flex-shrink-0">
+    <div className="flex items-center gap-4 p-4 bg-black rounded-lg border border-dark-500">
+      <div className="w-16 h-16 bg-dark-500 rounded-lg flex-shrink-0">
         <Image
           src={item.image}
           alt={item.name}
@@ -70,7 +73,7 @@ function CartItemComponent({ item, onQuantityChange, onRemove }: CartItemProps) 
       
       <div className="flex-1 min-w-0">
         {/* Responsive title - different lengths for different screen sizes */}
-        <h3 className="text-body-medium text-dark-900 font-medium">
+<h3 className="text-body-medium text-white font-medium">
           <span className="block sm:hidden" title={item.name}>
             {responsiveTitle.mobile}
           </span>
@@ -85,38 +88,41 @@ function CartItemComponent({ item, onQuantityChange, onRemove }: CartItemProps) 
           </span>
         </h3>
         
-        {/* SKU - responsive visibility */}
-        <p className="hidden md:block text-caption text-dark-500 mt-1">{item.sku}</p> 
+        {/* Description - show on larger screens (md and up) */}
+        {item.description && (
+          <p className="hidden md:block text-caption text-gray-300 mt-1">{item.description}</p>
+        )}
         
         <div className="flex items-center gap-3 mt-2">
-          <span className="text-caption text-dark-700">Quantity</span>
+<span className="text-caption text-white">Quantity</span>
           <div className="flex items-center gap-2">
             <button
               onClick={() => onQuantityChange(item.id, Math.max(1, item.quantity - 1))}
-              className="w-6 h-6 rounded-full border border-light-400 flex items-center justify-center text-dark-700 hover:bg-light-100"
+              className="w-6 h-6 rounded-full border !border-white !bg-transparent flex items-center justify-center hover:!bg-gray-900 active:!bg-gray-800 focus:!bg-gray-900 transition-colors"
             >
-              <Minus className="w-3 h-3" />
+              <Minus className="w-3 h-3 !text-white" />
             </button>
-            <span className="text-body text-dark-900 min-w-[2rem] text-center">{item.quantity}</span>
+            <span className="text-body text-light-100 min-w-[2rem] text-center">{item.quantity}</span>
             <button
               onClick={() => onQuantityChange(item.id, item.quantity + 1)}
-              className="w-6 h-6 rounded-full border border-light-400 flex items-center justify-center text-dark-700 hover:bg-light-100"
+              className="w-6 h-6 rounded-full border !border-white !bg-transparent flex items-center justify-center hover:!bg-gray-900 active:!bg-gray-800 focus:!bg-gray-900 transition-colors"
             >
-              <Plus className="w-3 h-3" />
+              <Plus className="w-3 h-3 !text-white" />
             </button>
           </div>
         </div>
       </div>
       
       <div className="flex items-center gap-3 mb-[2rem] md:mb-0">
-        <span className="text-body-medium text-dark-900 font-medium">
+        <span className="text-body-medium text-light-100 font-medium">
           {formatPrice(item.price * item.quantity)}
         </span>
         <button
           onClick={() => onRemove(item.id)}
-          className="text-red-500 hover:text-red-700 p-1"
+          className="w-8 h-8 !bg-transparent border-2 !border-white rounded flex items-center justify-center hover:!bg-gray-900 active:!bg-gray-800 focus:!bg-gray-900 transition-colors"
+          title="Remove item"
         >
-          <X className="w-4 h-4" />
+          <Trash className="w-4 h-4 !text-white" />
         </button>
       </div>
     </div>
@@ -142,6 +148,7 @@ export default function CartContent({ selectedProduct }: { selectedProduct?: Sel
             id: item.variantId || item.id,
             name: item.name,
             sku: `SKU-${item.variantId || item.id}`,
+            description: item.description || '', // Ensure description is included
             price: item.price,
             quantity: item.quantity,
             image: item.image || '/placeholder-image.jpg'
@@ -162,7 +169,8 @@ export default function CartContent({ selectedProduct }: { selectedProduct?: Sel
       name: item.name,
       price: item.price,
       quantity: item.quantity,
-      image: item.image
+      image: item.image,
+      description: item.description || ''
     }));
     
     const expires = new Date();
@@ -202,7 +210,8 @@ export default function CartContent({ selectedProduct }: { selectedProduct?: Sel
           sku: `SKU-${productId}`,
           price: selectedProduct.price,
           quantity: 1,
-          image: selectedProduct.imageSrc
+          image: selectedProduct.imageSrc,
+          description: selectedProduct.subtitle || '' // Use subtitle as description
         };
         newCart = [...existingCart, newItem];
       }
@@ -240,7 +249,7 @@ export default function CartContent({ selectedProduct }: { selectedProduct?: Sel
     return (
       <main className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20 lg:px-8 lg:pb-24">
         <div className="min-h-screen flex items-center justify-center">
-          <div className="text-dark-700">Loading cart...</div>
+          <div className="text-light-100">Loading cart...</div>
         </div>
       </main>
     );
@@ -248,9 +257,9 @@ export default function CartContent({ selectedProduct }: { selectedProduct?: Sel
 
   return (
     <main className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20 lg:px-8 lg:pb-24">
-      <nav className="py-4 text-caption text-dark-700">
-        <Link href="/" className="hover:underline">Home</Link> /{" "}
-        <span className="text-dark-900">Cart</span>
+      <nav className="py-4 text-caption text-white">
+        <Link href="/" className="hover:underline text-white">Home</Link> /{" "}
+        <span className="text-white">Cart</span>
       </nav>
 
       <div className="min-h-screen">
@@ -260,11 +269,11 @@ export default function CartContent({ selectedProduct }: { selectedProduct?: Sel
           <div className="lg:col-span-2">
             {/* Header with Continue Shopping on same line */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-              <h2 className="text-heading-3 text-dark-900">My Cart</h2>
+              <h2 className="text-heading-3 text-white">My Cart</h2>
               {cartItems.length > 0 && (
                 <Link 
                   href="/"
-                  className="inline-flex items-center gap-2 text-body-medium text-black transition hover:text-dark-700 focus:outline-none focus-visible:underline"
+                  className="inline-flex items-center gap-2 text-body-medium text-light-100 transition hover:text-light-300 focus:outline-none focus-visible:underline"
                 >
                   <ArrowLeft className="h-4 w-4 flex-shrink-0" />
                   <span>Continue Shopping</span>
@@ -274,13 +283,13 @@ export default function CartContent({ selectedProduct }: { selectedProduct?: Sel
             
             {cartItems.length === 0 ? (
               <div className="text-center py-12">
-                <p className="text-dark-700 mb-4">Your cart is empty</p>
+                <p className="text-light-100 mb-4">Your cart is empty</p>
                 <Link 
                   href="/" 
-                  className="inline-flex items-center gap-2 bg-dark-900 text-white px-6 py-3 rounded-full hover:opacity-90 transition"
+                  className="group inline-flex items-center gap-2 border border-white bg-black px-6 py-3 rounded-full hover:bg-white transition"
                 >
-                  <ArrowLeft className="h-4 w-4" />
-                  Continue Shopping
+                  <ArrowLeft className="h-4 w-4 text-white group-hover:text-black transition-colors" />
+                  <span className="text-white group-hover:text-black transition-colors">Continue Shopping</span>
                 </Link>
               </div>
             ) : (
@@ -300,35 +309,35 @@ export default function CartContent({ selectedProduct }: { selectedProduct?: Sel
           {/* Summary - Right Side */}
           {cartItems.length > 0 && (
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-lg p-6 text-dark-900 border border-light-300">
-                <h3 className="text-heading-4 text-dark-900 mb-6">Summary</h3>
+              <div className="bg-dark-800 rounded-lg p-6 text-white border border-dark-500">
+                <h3 className="text-heading-4 text-white mb-6">Summary</h3>
                 
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
-                    <span className="text-body text-dark-700">Total Items</span>
-                    <span className="text-body text-dark-900">{totalItems}</span>
+                    <span className="text-body text-white">Total Items</span>
+                    <span className="text-body text-white">{totalItems}</span>
                   </div>
                   
                   <div className="flex justify-between items-center">
-                    <span className="text-body text-dark-700">Subtotal</span>
-                    <span className="text-body text-dark-900">{formatPrice(subtotal)}</span>
+                    <span className="text-body text-white">Subtotal</span>
+                    <span className="text-body text-white">{formatPrice(subtotal)}</span>
                   </div>
                   
                   <div className="flex justify-between items-center">
-                    <span className="text-body text-dark-700">Estimated Delivery & Handling</span>
-                    <span className="text-body text-dark-900">{formatPrice(deliveryFee)}</span>
+                    <span className="text-body text-white">Estimated Delivery & Handling</span>
+                    <span className="text-body text-white">{formatPrice(deliveryFee)}</span>
                   </div>
                   
-                  <hr className="border-light-300" />
+                  <hr className="border-dark-500" />
                   
                   <div className="flex justify-between items-center">
-                    <span className="text-body-medium text-dark-900 font-medium">Total</span>
-                    <span className="text-body-medium text-dark-900 font-medium">{formatPrice(total)}</span>
+                    <span className="text-body-medium text-white font-medium">Total</span>
+                    <span className="text-body-medium text-white font-medium">{formatPrice(total)}</span>
                   </div>
                 </div>
                 
                 <Link href="/payment" className="block w-full mt-6">
-                  <button className="w-full bg-dark-900 text-white py-3 px-6 rounded-full text-body-medium font-medium hover:opacity-90 transition">
+                  <button className="w-full !border-white !bg-black !text-white py-3 px-6 rounded-full text-body-medium font-medium hover:!bg-white hover:!text-black focus:!bg-white focus:!text-black transition-colors">
                     Proceed to Checkout
                   </button>
                 </Link>

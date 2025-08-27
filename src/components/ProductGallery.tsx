@@ -16,7 +16,7 @@ function NotFoundBlock() {
       <div className="mt-6">
         <Link
           href="/products"
-          className="inline-block rounded-full bg-dark-900 px-6 py-3 text-body-medium text-light-100 transition hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[--color-dark-500]"
+          className="inline-block rounded-full bg-black text-white border border-white px-6 py-3 text-body-medium transition hover:bg-white hover:text-black focus:outline-none focus-visible:ring-2 focus-visible:ring-[--color-dark-500]"
         >
           Browse Products
         </Link>
@@ -67,16 +67,16 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     product.gender?.label ? `${product.gender.label} Shoes` : undefined;
 
   return (
-          <main className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20 lg:px-8 lg:pb-24 ">
-      <nav className="py-4 text-caption text-dark-700">
+<main className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20 lg:px-8 lg:pb-24 bg-black">
+      <nav className="py-4 text-caption text-white">
         <Link href="/" className="hover:underline">Home</Link> / <Link href="/products" className="hover:underline">Products</Link> /{" "}
-        <span className="text-dark-900">{product.name}</span>
+        <span className="text-white">{product.name}</span>
       </nav>
 
-      <section className="grid grid-cols-1 gap-10 mb-16 sm:mb-20 lg:grid-cols-2 lg:mb-16">
+<section className="grid grid-cols-1 gap-10 mb-16 sm:mb-20 lg:grid-cols-2 lg:mb-16 bg-black">
         {/* Simple Product Image */}
-        <div className="flex justify-center">
-          <div className="relative aspect-square w-full max-w-md overflow-hidden rounded-xl bg-light-200">
+<div className="flex justify-center">
+          <div className="relative aspect-square w-full max-w-md overflow-hidden rounded-xl bg-dark-700">
             <Image
               src={mainImage}
               alt={product.name}
@@ -88,18 +88,18 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
         </div>
 
         <div className="flex flex-col gap-6 mb-8">
-          <header className="flex flex-col gap-2">
-            <h1 className="text-heading-2 text-dark-900">{product.name}</h1>
-            {subtitle && <p className="text-body text-dark-700">{subtitle}</p>}
+<header className="flex flex-col gap-2">
+            <h1 className="text-heading-2 text-white">{product.name}</h1>
+            {subtitle && <p className="text-body text-white">{subtitle}</p>}
           </header>
 
-          <div className="flex items-center gap-3">
-            <p className="text-lead text-dark-900">{formatPrice(salePrice || displayPrice)}</p>
+<div className="flex items-center gap-3">
+            <p className="text-lead text-white">{formatPrice(salePrice || displayPrice)}</p>
             {compareAt && salePrice && (
               <>
-                <span className="text-body text-dark-700 line-through">{formatPrice(compareAt)}</span>
+                <span className="text-body text-white line-through">{formatPrice(compareAt)}</span>
                 {discount !== null && (
-                  <span className="rounded-full border border-light-300 px-2 py-1 text-caption text-[--color-green]">
+                  <span className="rounded-full border border-white px-2 py-1 text-caption text-[--color-green]">
                     {discount}% off
                   </span>
                 )}
@@ -108,7 +108,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
           </div>
 
           <div className="flex flex-col gap-3 mb-12 sm:mb-16">
-            <button className="flex items-center justify-center gap-2 rounded-full bg-dark-900 px-6 py-4 text-body-medium text-light-100 transition hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[--color-dark-500]">
+            <button className="flex items-center justify-center gap-2 rounded-full bg-black text-white border border-white px-6 py-4 text-body-medium transition hover:bg-white hover:text-black focus:outline-none focus-visible:ring-2 focus-visible:ring-[--color-dark-500]">
               <ShoppingBag className="h-5 w-5" />
               Add to Cart
             </button>

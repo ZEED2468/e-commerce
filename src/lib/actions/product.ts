@@ -143,18 +143,6 @@ export async function getProduct(productId: string): Promise<FullProduct | null>
     weight: null,
     dimensions: null,
     createdAt: new Date(),
-    color: {
-      id: "color-1",
-      name: "Black",
-      slug: "black",
-      hexCode: "#000000",
-    },
-    size: {
-      id: "size-1",
-      name: "M",
-      slug: "m",
-      sortOrder: 1,
-    },
   };
 
   const mockImage = {
@@ -201,28 +189,3 @@ export async function getProduct(productId: string): Promise<FullProduct | null>
   };
 }
 
-export type Review = {
-  id: string;
-  author: string;
-  rating: number;
-  title?: string;
-  content: string;
-  createdAt: string;
-};
-
-export type RecommendedProduct = {
-  id: string;
-  title: string;
-  price: number | null;
-  imageUrl: string;
-};
-
-export async function getProductReviews(_productId: string): Promise<Review[]> {
-  // Return empty reviews array
-  return [];
-}
-
-export async function getRecommendedProducts(_productId: string): Promise<RecommendedProduct[]> {
-  // Return empty recommendations array
-  return [];
-}

@@ -2,6 +2,7 @@
 
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+import { getProduct } from './product';
 
 // Define cart item type
 export interface CartItem {
@@ -11,6 +12,7 @@ export interface CartItem {
   name: string;
   price: number;
   image?: string;
+  description?: string;
 }
 
 // Get cart from cookies
@@ -49,6 +51,7 @@ export async function addToCartWithDetails(
     name: string;
     price: number;
     image: string;
+  description?: string;
   }
 ) {
   try {
@@ -66,7 +69,8 @@ export async function addToCartWithDetails(
         quantity,
         name: productDetails.name,
         price: productDetails.price,
-        image: productDetails.image
+        image: productDetails.image,
+        description: productDetails.description || ''
       });
     }
     
@@ -134,17 +138,36 @@ export async function clearCart() {
   cookieStore.delete('cart');
 }
 async function getProductByVariantId(variantId: string) {
-
   try {
+    // Extract product ID from variant ID (assuming variantId format: "variant-{productId}-1")
+    const productIdMatch = variantId.match(/variant-(\d+)-1/);
+    if (!productIdMatch) {
+      throw new Error('Invalid variant ID format');
+    }
+    
+    const productId = productIdMatch[1];
+    const product = await getProduct(productId);
+    
+    if (!product) {
+      throw new Error('Product not found');
+    }
+    
     return {
-      productId: 'placeholder-product-id',
-      name: 'Product Name',
-      price: 139.99,
-      image: '/placeholder-image.jpg'
+      productId: product.product.id,
+      name: product.product.name,
+      price: parseFloat(product.variants[0].price),
+      image: product.images[0].url,
+      description: product.product.description
     };
     
   } catch (error) {
     console.error('Error fetching product by variant ID:', error);
-    return null;
+    return {
+      productId: 'placeholder-product-id',
+      name: 'Product Name',
+      price: 139.99,
+      image: '/placeholder-image.jpg',
+      description: 'Product description'
+    };
   }
 }

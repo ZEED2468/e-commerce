@@ -24,7 +24,6 @@ export default function Navbar() {
       if (cart) {
         try {
           const cartData = JSON.parse(decodeURIComponent(cart.split('=')[1]));
-          // Line 21 fix: Replace 'any' with proper CartItem type
           return cartData.reduce((total: number, item: CartItem) => total + item.quantity, 0);
         } catch {
           return 0;
@@ -62,61 +61,61 @@ export default function Navbar() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 bg-light-100 border-b border-light-300">
+    <header className="sticky top-0 z-50 bg-dark-900 border-b border-dark-700">
       <nav
         className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8"
         aria-label="Primary"
       >
         <Link href="/" aria-label="Nike Home" className="flex items-center">
-          <Image src="/logo.svg" alt="Nike" width={28} height={28} priority className="invert" />
+          <Image src="/logo.svg" alt="Nike" width={28} height={28} priority className="" />
         </Link>
 
         <div className="hidden items-center gap-6 md:flex">
           <Link 
             href="/" 
-            className="text-body text-dark-900 transition-colors hover:text-dark-700"
+            className="text-body text-light-100 transition-colors hover:text-light-300"
           >
             Products
           </Link>
           <Link 
             href="/cart" 
-            className="text-body text-dark-900 transition-colors hover:text-dark-700"
+            className="text-body text-light-100 transition-colors hover:text-light-300"
           >
             Cart ({cartCount})
           </Link>
         </div>
 
-        <button
-          type="button"
-          className="inline-flex h-10 w-10 items-center justify-center rounded-md p-2 transition-colors hover:bg-light-200 md:hidden"
-          aria-controls="mobile-menu"
-          aria-expanded={open}
-          onClick={() => setOpen((v) => !v)}
-        >
-          <span className="sr-only">Toggle navigation</span>
-          <div className="flex flex-col gap-1">
-            <span className={`block h-0.5 w-5 bg-dark-900 transition-transform ${open ? 'rotate-45 translate-y-1.5' : ''}`}></span>
-            <span className={`block h-0.5 w-5 bg-dark-900 transition-opacity ${open ? 'opacity-0' : ''}`}></span>
-            <span className={`block h-0.5 w-5 bg-dark-900 transition-transform ${open ? '-rotate-45 -translate-y-1.5' : ''}`}></span>
-          </div>
-        </button>
+          <button
+            type="button"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-md p-2 !bg-dark-900 !text-white border !border-dark-900 md:hidden hover:!bg-dark-900 active:!bg-dark-900 focus:!bg-dark-900"
+            aria-controls="mobile-menu"
+            aria-expanded={open}
+            onClick={() => setOpen((v) => !v)}
+          >
+            <span className="sr-only">Toggle navigation</span>
+            <div className="flex flex-col gap-1">
+              <span className={`block h-0.5 w-5 !bg-white transition-transform duration-200 ${open ? 'rotate-45 translate-y-1.5' : ''}`}></span>
+              <span className={`block h-0.5 w-5 !bg-white transition-opacity duration-200 ${open ? 'opacity-0' : ''}`}></span>
+              <span className={`block h-0.5 w-5 !bg-white transition-transform duration-200 ${open ? '-rotate-45 -translate-y-1.5' : ''}`}></span>
+            </div>
+          </button>
       </nav>
 
       <div
         id="mobile-menu"
-        className={`border-t border-light-300 bg-light-100 md:hidden ${open ? "block" : "hidden"}`}
+        className={`border-t border-dark-700 bg-black md:hidden ${open ? "block" : "hidden"}`}
       >
         <div className="px-4 py-4 space-y-4">
           <Link 
             href="/" 
-            className="block text-body text-dark-900 transition-colors hover:text-dark-700"
+            className="block text-body text-white transition-colors hover:text-light-300"
             onClick={() => setOpen(false)}
           >
             Products
           </Link>
           <Link 
             href="/cart" 
-            className="block text-body text-dark-900 transition-colors hover:text-dark-700"
+            className="block text-body text-white transition-colors hover:text-light-300"
             onClick={() => setOpen(false)}
           >
             Cart ({cartCount})
