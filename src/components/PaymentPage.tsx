@@ -164,7 +164,7 @@ export default function PaymentPage() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     let formattedValue = value;
-    let newErrors = { ...errors };
+    const newErrors = { ...errors };
 
     // Clear error for current field
     delete newErrors[name as keyof FormErrors];
