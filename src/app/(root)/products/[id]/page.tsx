@@ -51,7 +51,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
   
   // Get the main product image from images array
   const primaryImage = images.find((img) => img.isPrimary) || images[0];
-  const mainImage = primaryImage?.url || "/books/books-1.jpg"; // fallback image
+  const mainImage = primaryImage?.url || "/books/book-1.png"; // fallback image
 
   const displayPrice = defaultVariant?.price ? Number(defaultVariant.price) : null;
   const salePrice = defaultVariant?.salePrice ? Number(defaultVariant.salePrice) : null;

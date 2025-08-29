@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   title: "LH",
   description: "LH",
   icons: {
-    icon: "/logo2.png",
+    icon: "/logo1.png",
   },
 };
 

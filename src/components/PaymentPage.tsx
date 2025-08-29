@@ -27,6 +27,91 @@ interface CartCookieItem {
   image?: string;
 }
 
+interface FormErrors {
+  email?: string;
+  cardName?: string;
+  cardNumber?: string;
+  expiryDate?: string;
+  cvv?: string;
+  billingAddress?: string;
+}
+
+// Card type detection
+const detectCardType = (number: string): string => {
+  const cleaned = number.replace(/\s+/g, '').replace(/-/g, '');
+  
+  if (/^4/.test(cleaned)) return 'Visa';
+  if (/^5[1-5]/.test(cleaned) || /^2[2-7]/.test(cleaned)) return 'Mastercard';
+  if (/^3[47]/.test(cleaned)) return 'American Express';
+  if (/^6(?:011|5)/.test(cleaned)) return 'Discover';
+  
+  return '';
+};
+
+// Format card number with hyphens
+const formatCardNumber = (value: string): string => {
+  const cleaned = value.replace(/\s+/g, '').replace(/-/g, '');
+  const chunks = cleaned.match(/.{1,4}/g) || [];
+  return chunks.join('-').substr(0, 19); // 4-4-4-4 format with hyphens
+};
+
+// Format expiry date MM/YY
+const formatExpiryDate = (value: string): string => {
+  const cleaned = value.replace(/\D/g, '');
+  if (cleaned.length >= 2) {
+    return cleaned.substr(0, 2) + '/' + cleaned.substr(2, 2);
+  }
+  return cleaned;
+};
+
+// Validate email
+const validateEmail = (email: string): boolean => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
+// Simple card number validation - just check first digit and length
+const validateCardNumber = (number: string): boolean => {
+  const cleaned = number.replace(/\s+/g, '').replace(/-/g, '');
+  
+  if (!/^\d+$/.test(cleaned) || cleaned.length < 13 || cleaned.length > 19) {
+    return false;
+  }
+
+  // Just check if it starts with a valid first digit for major card types
+  const firstDigit = cleaned.charAt(0);
+  return ['3', '4', '5', '6'].includes(firstDigit);
+};
+
+// Validate expiry date
+const validateExpiryDate = (expiry: string): boolean => {
+  if (!/^\d{2}\/\d{2}$/.test(expiry)) return false;
+  
+  const [month, year] = expiry.split('/');
+  const monthNum = parseInt(month, 10);
+  const yearNum = parseInt(year, 10);
+  
+  if (monthNum < 1 || monthNum > 12) return false;
+  
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear() % 100; // Get last 2 digits
+  const currentMonth = currentDate.getMonth() + 1;
+  
+  if (yearNum < currentYear || (yearNum === currentYear && monthNum < currentMonth)) {
+    return false;
+  }
+  
+  return true;
+};
+
+// Validate CVV
+const validateCVV = (cvv: string, cardType: string): boolean => {
+  if (cardType === 'American Express') {
+    return /^\d{4}$/.test(cvv);
+  }
+  return /^\d{3}$/.test(cvv);
+};
+
 export default function PaymentPage() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -38,6 +123,9 @@ export default function PaymentPage() {
     cvv: "",
     billingAddress: "",
   });
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [cardType, setCardType] = useState<string>('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Function to get cart from cookies
   const getCartFromCookies = (): CartItem[] => {
@@ -75,16 +163,107 @@ export default function PaymentPage() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    let formattedValue = value;
+    let newErrors = { ...errors };
+
+    // Clear error for current field
+    delete newErrors[name as keyof FormErrors];
+
+    switch (name) {
+      case 'cardNumber':
+        formattedValue = formatCardNumber(value);
+        const detectedType = detectCardType(formattedValue);
+        setCardType(detectedType);
+        break;
+      case 'expiryDate':
+        formattedValue = formatExpiryDate(value);
+        break;
+      case 'cvv':
+        formattedValue = value.replace(/\D/g, '').substr(0, cardType === 'American Express' ? 4 : 3);
+        break;
+      case 'cardName':
+        formattedValue = value.replace(/[^a-zA-Z\s]/g, '');
+        break;
+    }
+
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: formattedValue,
     }));
+
+    setErrors(newErrors);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const validateForm = (): boolean => {
+    const newErrors: FormErrors = {};
+
+    // Email validation
+    if (!formData.email) {
+      newErrors.email = 'Email is required';
+    } else if (!validateEmail(formData.email)) {
+      newErrors.email = 'Email address is not valid';
+    }
+
+    // Card name validation
+    if (!formData.cardName.trim()) {
+      newErrors.cardName = 'Cardholder name is required';
+    } else if (formData.cardName.trim().length < 2) {
+      newErrors.cardName = 'Enter a valid name';
+    }
+
+    // Card number validation
+    if (!formData.cardNumber) {
+      newErrors.cardNumber = 'Card number is required';
+    } else if (!validateCardNumber(formData.cardNumber)) {
+      newErrors.cardNumber = 'Enter a valid card number';
+    }
+
+    // Expiry date validation
+    if (!formData.expiryDate) {
+      newErrors.expiryDate = 'Expiry date is required';
+    } else if (!validateExpiryDate(formData.expiryDate)) {
+      newErrors.expiryDate = 'Enter a valid card expiry date';
+    }
+
+    // CVV validation
+    if (!formData.cvv) {
+      newErrors.cvv = 'CVV is required';
+    } else if (!validateCVV(formData.cvv, cardType)) {
+      newErrors.cvv = `Enter a valid ${cardType === 'American Express' ? '4' : '3'}-digit CVV`;
+    }
+
+    // Billing address validation
+    if (!formData.billingAddress.trim()) {
+      newErrors.billingAddress = 'Billing address is required';
+    } else if (formData.billingAddress.trim().length < 10) {
+      newErrors.billingAddress = 'Enter your complete billing address';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Redirect to payment processing page
-    window.location.href = "/payment-processing";
+    
+    if (!validateForm()) {
+      return;
+    }
+
+    setIsSubmitting(true);
+    
+    try {
+      // Simulate payment processing
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Redirect to payment processing page
+      window.location.href = "/payment-processing";
+    } catch (error) {
+      console.error('Payment failed:', error);
+      // Handle error appropriately
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
@@ -180,7 +359,7 @@ export default function PaymentPage() {
                     htmlFor="email"
                     className="block text-body-medium text-white font-medium mb-2"
                   >
-                    Email Address
+                    Delivery Email Address
                   </label>
                   <input
                     type="email"
@@ -189,16 +368,21 @@ export default function PaymentPage() {
                     value={formData.email}
                     onChange={handleInputChange}
                     placeholder="Email Address"
-                    className="w-full px-4 py-3 rounded-lg text-body bg-black placeholder-gray-400 focus:outline-none"
+                    className={`w-full px-4 py-3 rounded-lg text-body bg-black placeholder-gray-400 focus:outline-none ${
+                      errors.email ? 'border-red-500' : 'border-gray-600'
+                    }`}
                     style={{
                       backgroundColor: '#000000',
-                      color: '#000000',
-                      borderColor: '#999999',
+                      color: '#ffffff',
+                      borderColor: errors.email ? '#ef4444' : '#999999',
                       borderWidth: '1px',
                       borderStyle: 'solid'
                     }}
                     required
                   />
+                  {errors.email && (
+                    <p className="mt-1 text-sm text-red-500">{errors.email}</p>
+                  )}
                 </div>
 
                 {/* Card Name */}
@@ -207,7 +391,7 @@ export default function PaymentPage() {
                     htmlFor="cardName"
                     className="block text-body-medium text-white font-medium mb-2"
                   >
-                    Card Name
+                    Cardholder Name
                   </label>
                   <input
                     type="text"
@@ -216,16 +400,19 @@ export default function PaymentPage() {
                     value={formData.cardName}
                     onChange={handleInputChange}
                     placeholder="John Doe"
-                    className="w-full px-4 py-3 rounded-lg text-body placeholder-gray-400 focus:outline-none"
+                    className={`w-full px-4 py-3 rounded-lg text-body placeholder-gray-400 focus:outline-none`}
                     style={{
                       backgroundColor: '#000000',
                       color: '#ffffff',
-                      borderColor: '#999999',
+                      borderColor: errors.cardName ? '#ef4444' : '#999999',
                       borderWidth: '1px',
                       borderStyle: 'solid'
                     }}
                     required
                   />
+                  {errors.cardName && (
+                    <p className="mt-1 text-sm text-red-500">{errors.cardName}</p>
+                  )}
                 </div>
 
                 {/* Card Number */}
@@ -234,7 +421,7 @@ export default function PaymentPage() {
                     htmlFor="cardNumber"
                     className="block text-body-medium text-white font-medium mb-2"
                   >
-                    Card Number
+                    Card Number {cardType && <span className="text-white">- {cardType}</span>}
                   </label>
                   <input
                     type="text"
@@ -242,17 +429,21 @@ export default function PaymentPage() {
                     name="cardNumber"
                     value={formData.cardNumber}
                     onChange={handleInputChange}
-                    placeholder="1234 - 1234 - 1234 - 1234"
-                    className="w-full px-4 py-3 rounded-lg text-body placeholder-gray-400 focus:outline-none"
+                    placeholder="1234-1234-1234-1234"
+                    maxLength={19}
+                    className={`w-full px-4 py-3 rounded-lg text-body placeholder-gray-400 focus:outline-none`}
                     style={{
                       backgroundColor: '#000000',
                       color: '#ffffff',
-                      borderColor: '#999999',
+                      borderColor: errors.cardNumber ? '#ef4444' : '#999999',
                       borderWidth: '1px',
                       borderStyle: 'solid'
                     }}
                     required
                   />
+                  {errors.cardNumber && (
+                    <p className="mt-1 text-sm text-red-500">{errors.cardNumber}</p>
+                  )}
                 </div>
 
                 {/* Expiry Date and CVV on same line */}
@@ -271,23 +462,27 @@ export default function PaymentPage() {
                       value={formData.expiryDate}
                       onChange={handleInputChange}
                       placeholder="MM/YY"
-                      className="w-full px-4 py-3 rounded-lg text-body placeholder-gray-400 focus:outline-none"
+                      maxLength={5}
+                      className={`w-full px-4 py-3 rounded-lg text-body placeholder-gray-400 focus:outline-none`}
                       style={{
                         backgroundColor: '#000000',
                         color: '#ffffff',
-                        borderColor: '#999999',
+                        borderColor: errors.expiryDate ? '#ef4444' : '#999999',
                         borderWidth: '1px',
                         borderStyle: 'solid'
                       }}
                       required
                     />
+                    {errors.expiryDate && (
+                      <p className="mt-1 text-sm text-red-500">{errors.expiryDate}</p>
+                    )}
                   </div>
                   <div>
                     <label
                       htmlFor="cvv"
                       className="block text-body-medium text-white font-medium mb-2"
                     >
-                      CVV
+                      CVV {cardType === 'American Express' ? '(4 digits)' : '(3 digits)'}
                     </label>
                     <input
                       type="text"
@@ -295,17 +490,21 @@ export default function PaymentPage() {
                       name="cvv"
                       value={formData.cvv}
                       onChange={handleInputChange}
-                      placeholder="CVV"
-                      className="w-full px-4 py-3 rounded-lg text-body placeholder-gray-400 focus:outline-none"
+                      placeholder={cardType === 'American Express' ? '1234' : '123'}
+                      maxLength={cardType === 'American Express' ? 4 : 3}
+                      className={`w-full px-4 py-3 rounded-lg text-body placeholder-gray-400 focus:outline-none`}
                       style={{
                         backgroundColor: '#000000',
                         color: '#ffffff',
-                        borderColor: '#999999',
+                        borderColor: errors.cvv ? '#ef4444' : '#999999',
                         borderWidth: '1px',
                         borderStyle: 'solid'
                       }}
                       required
                     />
+                    {errors.cvv && (
+                      <p className="mt-1 text-sm text-red-500">{errors.cvv}</p>
+                    )}
                   </div>
                 </div>
 
@@ -324,16 +523,19 @@ export default function PaymentPage() {
                     value={formData.billingAddress}
                     onChange={handleInputChange}
                     placeholder="12 SW Longer Str madeylia"
-                    className="w-full px-4 py-3 rounded-lg text-body placeholder-gray-400 focus:outline-none"
+                    className={`w-full px-4 py-3 rounded-lg text-body placeholder-gray-400 focus:outline-none`}
                     style={{
                       backgroundColor: '#000000',
                       color: '#ffffff',
-                      borderColor: '#999999',
+                      borderColor: errors.billingAddress ? '#ef4444' : '#999999',
                       borderWidth: '1px',
                       borderStyle: 'solid'
                     }}
                     required
                   />
+                  {errors.billingAddress && (
+                    <p className="mt-1 text-sm text-red-500">{errors.billingAddress}</p>
+                  )}
                 </div>
 
                 {/* Total Amount before Pay button */}
@@ -351,9 +553,14 @@ export default function PaymentPage() {
                 {/* Pay Button */}
                 <button
                   type="submit" 
-                  className="w-full !bg-black !text-white !border-gray-300 py-4 px-6 rounded-lg text-body-medium font-medium hover:!bg-white hover:!text-black focus:!text-black transition-colors border"
+                  disabled={isSubmitting}
+                  className={`w-full py-4 px-6 rounded-lg text-body-medium font-medium border transition-colors ${
+                    isSubmitting
+                      ? 'bg-gray-600 text-gray-300 cursor-not-allowed'
+                      : 'bg-black text-white border-gray-300 hover:bg-white hover:text-black focus:text-black'
+                  }`}
                 >
-                  Pay
+                  {isSubmitting ? 'Processing...' : 'Pay'}
                 </button>
               </form>
             </div>
