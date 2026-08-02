@@ -1,535 +1,182 @@
 E-Commerce Platform
 
-A scalable full-stack e-commerce platform designed to handle product discovery, cart management, order processing, payments, inventory management, and customer accounts.
+A modern full-stack e-commerce platform that allows customers to discover products, manage their carts, place orders, and make payments, while providing administrators with tools to manage products, inventory, and orders.
 
-The project focuses on production-oriented software engineering practices, including authentication, transactional workflows, caching, background processing, observability, and scalable API design.
+Features
 
-🚀 Features
-
-Customer Features
+Customer
 
 - User registration and authentication
-- Product browsing and search
+- Browse and search products
 - Product categories and filtering
-- Product details and reviews
-- Shopping cart
+- Add and manage cart items
 - Wishlist
-- Checkout
-- Order creation and tracking
-- Payment processing
-- Order history
-- Customer profile management
+- Checkout and payment
+- Order history and tracking
+- Product reviews
 
-Admin Features
+Admin
 
-- Product management
-- Category management
+- Product and category management
 - Inventory management
 - Order management
 - Customer management
-- Sales dashboard
-- Product and inventory analytics
+- Sales overview
 
-Engineering Features
+Backend & Infrastructure
 
-- JWT-based authentication
-- Role-based access control (RBAC)
-- RESTful APIs
+- JWT authentication and role-based authorization
+- RESTful API
 - PostgreSQL database
 - Redis caching
-- Background job processing
-- Payment webhook handling
-- Idempotent payment and order operations
-- Database transactions
-- Rate limiting
-- Structured logging
-- Application monitoring and tracing
+- RabbitMQ background jobs
+- Payment webhooks
+- Idempotent order and payment processing
+- Structured logging and monitoring
 - Dockerized development environment
 
-🏗️ Architecture
+Tech Stack
 
-                         ┌─────────────────┐
-                         │   Web Client    │
-                         │ React / Next.js │
-                         └────────┬────────┘
-                                  │
-                                  ▼
-                         ┌─────────────────┐
-                         │    API Layer    │
-                         │ NestJS / REST   │
-                         └────────┬────────┘
-                                  │
-              ┌───────────────────┼───────────────────┐
-              │                   │                   │
-              ▼                   ▼                   ▼
-       ┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-       │ PostgreSQL  │     │    Redis    │     │   Queue     │
-       │  Database   │     │   Cache     │     │  Workers    │
-       └─────────────┘     └─────────────┘     └──────┬──────┘
-                                                       │
-                                                       ▼
-                                               ┌─────────────┐
-                                               │ Notifications│
-                                               │ / Emails     │
-                                               └─────────────┘
+Layer| Technology
+Frontend| React, Next.js, TypeScript, Tailwind CSS
+Backend| Node.js, NestJS, TypeScript
+Database| PostgreSQL
+Cache| Redis
+Message Broker| RabbitMQ
+Infrastructure| Docker
+Monitoring| OpenTelemetry, Prometheus, Grafana
+Payments| Payment Provider API
 
-                         External Services
-                               │
-                ┌──────────────┴──────────────┐
-                ▼                             ▼
-         ┌─────────────┐               ┌─────────────┐
-         │  Payment    │               │    Object   │
-         │  Provider   │               │   Storage   │
-         └─────────────┘               └─────────────┘
+Architecture
 
-🛠️ Tech Stack
+                 ┌──────────────┐
+                 │   Frontend   │
+                 │ React/Next.js│
+                 └──────┬───────┘
+                        │
+                        ▼
+                 ┌──────────────┐
+                 │  NestJS API  │
+                 └──────┬───────┘
+                        │
+          ┌─────────────┼─────────────┐
+          ▼             ▼             ▼
+     PostgreSQL       Redis       RabbitMQ
+                                      │
+                                      ▼
+                                   Workers
+                                      │
+                                      ▼
+                              Notifications
 
-Frontend
+Core Workflow
 
-- React / Next.js
-- TypeScript
-- Tailwind CSS
-- React Query
-- Zustand
-
-Backend
-
-- Node.js
-- NestJS
-- TypeScript
-- REST API
-- PostgreSQL
-- Prisma / TypeORM
-
-Infrastructure
-
-- Docker
-- Redis
-- RabbitMQ
-- Nginx
-- CI/CD
-
-Observability
-
-- OpenTelemetry
-- Prometheus
-- Grafana
-- Sentry
-
-External Services
-
-- Payment provider
-- Object storage
-- Email service
-
-📁 Project Structure
-
-ecommerce/
-├── apps/
-│   ├── web/
-│   │   ├── app/
-│   │   ├── components/
-│   │   ├── hooks/
-│   │   └── services/
-│   │
-│   └── api/
-│       ├── src/
-│       │   ├── auth/
-│       │   ├── users/
-│       │   ├── products/
-│       │   ├── categories/
-│       │   ├── cart/
-│       │   ├── orders/
-│       │   ├── payments/
-│       │   ├── inventory/
-│       │   └── common/
-│       └── test/
-│
-├── workers/
-│   ├── notifications/
-│   └── order-processing/
-│
-├── infrastructure/
-│   ├── docker/
-│   └── nginx/
-│
-├── docker-compose.yml
-├── .env.example
-└── README.md
-
-🔐 Authentication & Authorization
-
-The platform uses JWT-based authentication.
-
-Access control is implemented using role-based authorization.
-
-Roles
-
-CUSTOMER
-ADMIN
-
-Protected resources require a valid access token.
-
-Example:
-
-Authorization: Bearer <access_token>
-
-🛒 Order Processing
-
-The checkout workflow follows a controlled transaction flow:
-
-Cart
- │
- ▼
-Validate Products
- │
- ▼
-Check Inventory
- │
- ▼
+Customer
+   ↓
+Browse Products
+   ↓
+Add to Cart
+   ↓
+Checkout
+   ↓
 Create Order
- │
- ▼
-Reserve Inventory
- │
- ▼
-Initialize Payment
- │
- ▼
-Payment Confirmation
- │
- ▼
-Update Order
- │
- ▼
+   ↓
+Process Payment
+   ↓
+Payment Webhook
+   ↓
+Confirm Order
+   ↓
+Update Inventory
+   ↓
 Send Notification
 
-Critical operations are designed to be idempotent to prevent duplicate orders or payments when requests are retried.
+Payment and order operations are designed to be idempotent, preventing duplicate orders when requests or webhook events are retried.
 
-💳 Payment Webhooks
+API Structure
 
-Payment providers communicate transaction status through webhooks.
+/api/v1/auth
+/api/v1/products
+/api/v1/categories
+/api/v1/cart
+/api/v1/orders
+/api/v1/payments
+/api/v1/inventory
+/api/v1/webhooks
 
-The webhook endpoint:
+Getting Started
 
-1. Validates the webhook signature.
-2. Checks the event type.
-3. Verifies whether the event has already been processed.
-4. Updates the payment/order state.
-5. Triggers downstream processing.
-6. Returns a successful response.
-
-Example:
-
-POST /api/v1/webhooks/payment
-
-Webhook processing is designed to tolerate retries and duplicate events.
-
-📦 Inventory Management
-
-Inventory is updated using transactional database operations.
-
-Example:
-
-Available Stock = 10
-
-Customer purchases 2
-
-Available Stock = 8
-
-Concurrent checkout requests are handled using appropriate database locking/transaction strategies to reduce the risk of overselling.
-
-⚡ Caching
-
-Redis is used for frequently accessed data such as:
-
-- Product listings
-- Product details
-- Categories
-- Session-related data
-- Rate-limiting counters
-
-Example caching strategy:
-
-Client
-  │
-  ▼
-API
-  │
-  ├── Cache Hit ──► Redis ──► Response
-  │
-  └── Cache Miss
-          │
-          ▼
-      PostgreSQL
-          │
-          ▼
-        Redis
-          │
-          ▼
-       Response
-
-Cache invalidation occurs when the underlying product data changes.
-
-🔄 Background Processing
-
-Long-running or non-critical operations are processed asynchronously.
-
-Examples:
-
-- Order confirmation emails
-- Payment notifications
-- Inventory events
-- Analytics processing
-- Customer notifications
-
-API
- │
- ▼
-Message Queue
- │
- ├──► Worker
- │      │
- │      └──► Email Service
- │
- └──► Worker
-        │
-        └──► Notification Service
-
-Failed jobs can be retried using exponential backoff and eventually moved to a Dead Letter Queue (DLQ).
-
-📊 Observability
-
-The application includes observability for understanding system health and performance.
-
-Metrics
-
-Examples:
-
-- HTTP request rate
-- Request latency
-- Error rate
-- Database query latency
-- Queue depth
-- Payment success rate
-- Order processing time
-- Cache hit/miss ratio
-
-Logging
-
-Structured logs are used for important application events.
-
-Example:
-
-{
-  "level": "info",
-  "event": "order.created",
-  "orderId": "order_123",
-  "userId": "user_456"
-}
-
-Distributed Tracing
-
-OpenTelemetry can trace requests across:
-
-Client
-  ↓
-API
-  ↓
-Database
-  ↓
-Queue
-  ↓
-Worker
-  ↓
-Notification Service
-
-This makes it possible to identify bottlenecks across distributed components.
-
-🧪 Testing
-
-The project uses multiple levels of testing.
-
-Unit Tests
-
-Test individual services and business logic.
-
-npm run test
-
-Integration Tests
-
-Test interactions with external dependencies such as:
-
-- PostgreSQL
-- Redis
-- Message queues
-
-End-to-End Tests
-
-Test complete user workflows such as:
-
-Register
- → Login
- → Browse Products
- → Add to Cart
- → Checkout
- → Pay
- → Receive Order Confirmation
-
-🐳 Running Locally
-
-Prerequisites
+Requirements
 
 - Node.js
 - Docker
 - Docker Compose
-- PostgreSQL
-- Redis
 
-Clone Repository
+Installation
 
-git clone https://github.com/<username>/<repository>.git
-
+git clone <repository-url>
 cd ecommerce
-
-Install Dependencies
 
 npm install
 
-Configure Environment
-
 cp .env.example .env
-
-Update the environment variables:
-
-DATABASE_URL=
-REDIS_URL=
-JWT_SECRET=
-PAYMENT_SECRET=
-RABBITMQ_URL=
-
-Start Infrastructure
 
 docker compose up -d
 
-Run the Application
-
 npm run dev
 
-The application will then be available locally.
+Environment Variables
 
-🔌 API Examples
+DATABASE_URL=
+REDIS_URL=
+RABBITMQ_URL=
+JWT_SECRET=
+PAYMENT_SECRET=
 
-Authentication
+Testing
 
-POST /api/v1/auth/register
-POST /api/v1/auth/login
-POST /api/v1/auth/refresh
-POST /api/v1/auth/logout
+The project includes:
 
-Products
+- Unit tests for business logic
+- Integration tests for database and infrastructure
+- End-to-end tests for critical customer workflows
 
-GET    /api/v1/products
-GET    /api/v1/products/:id
-POST   /api/v1/products
-PATCH  /api/v1/products/:id
-DELETE /api/v1/products/:id
+Example:
 
-Cart
+npm run test
+npm run test:e2e
 
-GET    /api/v1/cart
-POST   /api/v1/cart/items
-PATCH  /api/v1/cart/items/:id
-DELETE /api/v1/cart/items/:id
+Observability
 
-Orders
+The application tracks important system metrics such as:
 
-POST /api/v1/orders
-GET  /api/v1/orders
-GET  /api/v1/orders/:id
+- API response time
+- Error rates
+- Database performance
+- Queue processing
+- Cache performance
+- Payment and order processing
 
-🔒 Security
+OpenTelemetry, Prometheus, and Grafana are used to provide application visibility.
 
-Security considerations include:
+Project Goals
 
-- Password hashing
-- JWT authentication
-- Role-based authorization
-- Request validation
-- Rate limiting
-- CORS configuration
-- Secure HTTP headers
-- Webhook signature verification
-- Protection against duplicate payment processing
-- Parameterized database queries
-- Environment-based secret management
+This project demonstrates practical experience with:
 
-🚀 Deployment
-
-The application is designed to support containerized deployment.
-
-                  Internet
-                     │
-                     ▼
-                  CDN / LB
-                     │
-                     ▼
-                 API Server
-                     │
-          ┌──────────┼──────────┐
-          ▼          ▼          ▼
-      PostgreSQL   Redis      Queue
-          │                     │
-          │                     ▼
-          │                  Workers
-          │
-          ▼
-       Backups
-
-CI/CD pipelines can automatically:
-
-1. Run linting
-2. Run unit tests
-3. Run integration tests
-4. Build Docker images
-5. Run security checks
-6. Deploy the application
-
-📈 Future Improvements
-
-- Elasticsearch/OpenSearch for advanced product search
-- Recommendation engine
-- Multi-vendor marketplace support
-- Event-driven architecture
-- Product analytics
-- Distributed inventory service
-- Multi-region deployment
-- Read replicas
-- Horizontal API scaling
-- Feature flags
-- Advanced fraud detection
-
-🎯 Engineering Goals
-
-This project is intended to demonstrate practical knowledge of:
-
-- Full-stack development
+- Full-stack application development
 - REST API design
-- Database modeling
-- Distributed systems
+- Database design and transactions
+- Authentication and authorization
 - Caching
 - Asynchronous processing
 - Message queues
-- Transactions and concurrency
-- Payment integrations
+- Payment integration
 - Webhooks
-- Authentication and authorization
+- Concurrency and idempotency
 - Observability
-- Containerization
-- CI/CD
-- System scalability
-- Production-oriented software engineering
+- Docker and deployment
+- Scalable backend architecture
 
-📄 License
+License
 
-This project is licensed under the MIT License.
+MIT
